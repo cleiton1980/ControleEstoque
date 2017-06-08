@@ -5,10 +5,10 @@
  */
 package br.com.ControleEstoque.visao;
 
-
 import br.com.ControleEstoque.controle.ControleFornecedores;
 import br.com.ControleEstoque.modelo.ModeloFornecedores;
 import br.com.ControleEstoque.dal.ConexaoBD;
+import br.com.ControleEstoque.modelo.ModeloTabela;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -19,9 +19,11 @@ import javax.swing.ListSelectionModel;
  * @author Cleiton
  */
 public class FrmFornecedores extends javax.swing.JFrame {
+
     ConexaoBD conex = new ConexaoBD();
     ModeloFornecedores mod = new ModeloFornecedores();
     ControleFornecedores control = new ControleFornecedores();
+
     /**
      * Creates new form FrmFornecedores
      */
@@ -30,7 +32,8 @@ public class FrmFornecedores extends javax.swing.JFrame {
 	preencherBairros();
 	preencherTabela("select * from tbfornecedores inner join bairro on id_bairrof = id_bairro");
     }//FIM DA INICIALIZACAO
-     public void preencherBairros() {
+
+    public void preencherBairros() {
 	conex.Conexao();
 
 	try {
@@ -38,43 +41,50 @@ public class FrmFornecedores extends javax.swing.JFrame {
 	    conex.rs.first();
 	    cb_bairroFornecedor.removeAllItems();
 	    do {
-		cb_bairroFornecedor .addItem(conex.rs.getString("nome_bairro"));
+		cb_bairroFornecedor.addItem(conex.rs.getString("nome_bairro"));
 	    } while (conex.rs.next());
 	} catch (SQLException ex) {
 	    JOptionPane.showMessageDialog(null, "Erro ao preencher a combobox bairro" + ex);
 	}
 	conex.desconecta();
     }// FIM DO METODO
-public void preencherTabela(String sql) {
+
+    public void preencherTabela(String sql) {
 	ArrayList dados = new ArrayList();
-	String[] colunas = new String[]{"Id", "Nome", "Endereço","CNPJ", "Telefone"};
+	String[] colunas = new String[]{"Id", "Fornecedor", "Endereço","Nº", "CNPJ", "Celular","Telefone"};
 	conex.Conexao();
 	conex.executaSql(sql);
 	try {
 	    conex.rs.first();
 	    do {
-		dados.add(new Object[]{conex.rs.getInt("id_fornecedor"), conex.rs.getString("nome_fornecedor"), conex.rs.getString("endereco_fornecedor"),conex.rs.getString("cnpj_fornecedor"), conex.rs.getString("telefone1_fornecedor")});
+		dados.add(new Object[]{conex.rs.getInt("id_fornecedor"), conex.rs.getString("nome_fornecedor"), conex.rs.getString("endereco_fornecedor"), conex.rs.getString("numero_fornecedor"), conex.rs.getString("cnpj_fornecedor"), conex.rs.getString("telefone1_fornecedor"), conex.rs.getString("telefone2_fornecedor")});
 	    } while (conex.rs.next());
 
 	} catch (Exception ex) {
-	    JOptionPane.showMessageDialog(null, "Erro ao preencher ArrayList" + ex);
+	    //JOptionPane.showMessageDialog(null, "Não ha nenhum fornecedor cadastrado");
 	}
 	ModeloTabela modelo = new ModeloTabela(dados, colunas);
 	tbl_fornecedores.setModel(modelo);
-	tbl_fornecedores.getColumnModel().getColumn(0).setPreferredWidth(30);
+	tbl_fornecedores.getColumnModel().getColumn(0).setPreferredWidth(65);
 	tbl_fornecedores.getColumnModel().getColumn(0).setResizable(false);
-	
-	tbl_fornecedores.getColumnModel().getColumn(1).setPreferredWidth(182);
+
+	tbl_fornecedores.getColumnModel().getColumn(1).setPreferredWidth(210);
 	tbl_fornecedores.getColumnModel().getColumn(1).setResizable(false);
-	
-	tbl_fornecedores.getColumnModel().getColumn(2).setPreferredWidth(183);
+
+	tbl_fornecedores.getColumnModel().getColumn(2).setPreferredWidth(210);
 	tbl_fornecedores.getColumnModel().getColumn(2).setResizable(false);
-	
-	tbl_fornecedores.getColumnModel().getColumn(3).setPreferredWidth(155);
+
+	tbl_fornecedores.getColumnModel().getColumn(3).setPreferredWidth(70);
 	tbl_fornecedores.getColumnModel().getColumn(3).setResizable(false);
 
-	tbl_fornecedores.getColumnModel().getColumn(4).setPreferredWidth(150);
+	tbl_fornecedores.getColumnModel().getColumn(4).setPreferredWidth(200);
 	tbl_fornecedores.getColumnModel().getColumn(4).setResizable(false);
+	
+	tbl_fornecedores.getColumnModel().getColumn(5).setPreferredWidth(150);
+	tbl_fornecedores.getColumnModel().getColumn(5).setResizable(false);
+	
+	tbl_fornecedores.getColumnModel().getColumn(6).setPreferredWidth(150);
+	tbl_fornecedores.getColumnModel().getColumn(6).setResizable(false);
 
 	tbl_fornecedores.getTableHeader().setReorderingAllowed(false);
 	tbl_fornecedores.setAutoResizeMode(tbl_fornecedores.AUTO_RESIZE_OFF);
@@ -214,7 +224,7 @@ public void preencherTabela(String sql) {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lbl_idFornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(99, 99, 99)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(207, 207, 207)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -308,6 +318,7 @@ public void preencherTabela(String sql) {
         txt_cidade.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         txt_cidade.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txt_cidade.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        txt_cidade.setEnabled(false);
 
         jLabel9.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -317,6 +328,7 @@ public void preencherTabela(String sql) {
         txt_estado.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         txt_estado.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txt_estado.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        txt_estado.setEnabled(false);
 
         jLabel10.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -416,17 +428,19 @@ public void preencherTabela(String sql) {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(151, 151, 151)
                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
+                .addGap(73, 73, 73)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(1, 1, 1)
-                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(19, 19, 19))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)))
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txt_celular)
                             .addComponent(txt_telefoneFornecedor)
@@ -483,12 +497,14 @@ public void preencherTabela(String sql) {
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
 
+        jPanel5Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {txt_celular, txt_cidade, txt_cnpjFornecedor, txt_enderecoFornecedor, txt_estado, txt_nomeFornecedor, txt_numeroFornecedor, txt_pesquisar, txt_telefoneFornecedor});
+
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         bt_novo.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        bt_novo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/AutoEletrica/icones/add.png"))); // NOI18N
+        bt_novo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/ControleEstoque/icones/add.png"))); // NOI18N
         bt_novo.setText("Novo");
         bt_novo.setToolTipText("Faça um novo Registro");
         bt_novo.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -519,7 +535,7 @@ public void preencherTabela(String sql) {
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         bt_salvar.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        bt_salvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/AutoEletrica/icones/save-icon.png"))); // NOI18N
+        bt_salvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/ControleEstoque/icones/save-icon.png"))); // NOI18N
         bt_salvar.setText("Salvar");
         bt_salvar.setToolTipText("Salve um novo registro");
         bt_salvar.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -550,7 +566,7 @@ public void preencherTabela(String sql) {
         jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         bt_cancelar.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        bt_cancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/AutoEletrica/icones/cancel-icon.png"))); // NOI18N
+        bt_cancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/ControleEstoque/icones/cancel-icon.png"))); // NOI18N
         bt_cancelar.setText("Cancelar");
         bt_cancelar.setToolTipText("Limpar os Campos");
         bt_cancelar.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -581,7 +597,7 @@ public void preencherTabela(String sql) {
         jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         bt_editar.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        bt_editar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/AutoEletrica/icones/File-edit-icon.png"))); // NOI18N
+        bt_editar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/ControleEstoque/icones/File-edit-icon.png"))); // NOI18N
         bt_editar.setText("Editar");
         bt_editar.setToolTipText("Atualizar um registro");
         bt_editar.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -612,7 +628,7 @@ public void preencherTabela(String sql) {
         jPanel12.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         bt_excluir.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        bt_excluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/AutoEletrica/icones/delete.png"))); // NOI18N
+        bt_excluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/ControleEstoque/icones/delete.png"))); // NOI18N
         bt_excluir.setText("Excluir");
         bt_excluir.setToolTipText("Ecluir permanentemente um registro");
         bt_excluir.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -731,228 +747,200 @@ public void preencherTabela(String sql) {
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(1139, Short.MAX_VALUE))
+                .addContainerGap(139, Short.MAX_VALUE))
         );
 
-        setSize(new java.awt.Dimension(1366, 1799));
+        setSize(new java.awt.Dimension(1366, 799));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void cb_bairroFornecedorMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cb_bairroFornecedorMouseEntered
-
-        try {
-            conex.Conexao();
-            conex.executaSql("select * from bairro inner join cidade on id_cidade = id_cidadef inner join estado on id_estadof=id_estado where nome_bairro = '" + cb_bairroFornecedor.getSelectedItem() + "'");
-            conex.rs.first();
-            txt_cidade.setText(conex.rs.getString("nome_cidade"));
-            txt_estado.setText(conex.rs.getString("nome_estado"));
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Erro ao selecionar a combobox bairro" + ex);
-        }
+	try {
+	    conex.Conexao();
+	    conex.executaSql("select * from bairro inner join cidade on id_cidade = id_cidadef inner join estado on id_estadof=id_estado where nome_bairro = '" + cb_bairroFornecedor.getSelectedItem() + "'");
+	    conex.rs.first();
+	    txt_cidade.setText(conex.rs.getString("nome_cidade"));
+	    txt_estado.setText(conex.rs.getString("nome_estado"));
+	} catch (SQLException ex) {
+	    JOptionPane.showMessageDialog(null, "Erro ao selecionar a combobox bairro" + ex);
+	}
     }//GEN-LAST:event_cb_bairroFornecedorMouseEntered
 
     private void bt_pesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_pesquisarActionPerformed
-        String pesquisa = txt_pesquisar.getText();
-        if (pesquisa.equals("")) {
-            JOptionPane.showMessageDialog(null, "Digite um Cliente a ser pesquisado");
-        } else {
-
-            mod.setPesquisa(txt_pesquisar.getText());
-            ModeloClientes model = control.pesquisarClientes(mod);
-            lbl_idCliente.setText(String.valueOf(model.getId_cliente()));
-            txt_nomeFornecedor.setText(model.getNome_cliente());
-            txt_enderecoFornecedor.setText(model.getEndereco_cliente());
-            txt_numeroFornecedor.setText(model.getNumero_cliente());
-            txt_cnpjFornecedor.setText(model.getRg_cliente());
-            txt_cpfCliente.setText(model.getCpf_cliente());
-            txt_celular.setText(model.getCelular_cliente());
-            txt_telefoneFornecedor.setText(model.getTelefone_cliente());
-            cb_bairroFornecedor.setSelectedItem(model.getNome_bairro());
-            txt_cidade.setText(model.getNome_cidade());
-            txt_estado.setText(model.getNome_estado());
-            bt_editar.setEnabled(true);
-            bt_excluir.setEnabled(true);
-        }
+	String pesquisa = txt_pesquisar.getText();
+	if (pesquisa.equals("")) {
+	    JOptionPane.showMessageDialog(null, "Digite um Cliente a ser pesquisado");
+	} else {
+	    mod.setPesquisa(txt_pesquisar.getText());
+	    ModeloFornecedores model = control.pesquisarFornecedores(mod);
+	    lbl_idFornecedor.setText(String.valueOf(model.getId_fornecedor()));
+	    txt_nomeFornecedor.setText(model.getNome_fornecedor());
+	    txt_enderecoFornecedor.setText(model.getEndereco_fornecedor());
+	    txt_numeroFornecedor.setText(model.getEndereco_fornecedor());
+	    txt_cnpjFornecedor.setText(model.getCnpj_fornecedor());
+	    txt_celular.setText(model.getTelefone1_fornecedor());
+	    txt_telefoneFornecedor.setText(model.getTelefone2_fornecedor());
+	    cb_bairroFornecedor.setSelectedItem(model.getNome_bairro());
+	    txt_cidade.setText(model.getNome_cidade());
+	    txt_estado.setText(model.getNome_estado());
+	    bt_editar.setEnabled(true);
+	    bt_excluir.setEnabled(true);
+	}
     }//GEN-LAST:event_bt_pesquisarActionPerformed
 
     private void txt_celularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_celularActionPerformed
-        // TODO add your handling code here:
+	// TODO add your handling code here:
     }//GEN-LAST:event_txt_celularActionPerformed
 
     private void txt_telefoneFornecedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_telefoneFornecedorActionPerformed
-        // TODO add your handling code here:
+	// TODO add your handling code here:
     }//GEN-LAST:event_txt_telefoneFornecedorActionPerformed
 
     private void txt_cnpjFornecedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_cnpjFornecedorActionPerformed
-        // TODO add your handling code here:
+	// TODO add your handling code here:
     }//GEN-LAST:event_txt_cnpjFornecedorActionPerformed
 
     private void bt_novoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_novoActionPerformed
-        lbl_idProduto.setText("");
-        txt_codigoProduto.setText("");
-        txt_descricaoProduto.setText("");
-        txt_quantidadeProduto.setText("");
-        txt_cnpjFornecedor.setText("");
-        txt_precoCompra.setText("");
-        txt_celular.setText("");
-        txt_telefoneFornecedor.setText("");
-        txt_pesquisar.setText("");
-        txt_pesquisar.setEnabled(false);
-        txt_codigoProduto.setEnabled(true);
-        txt_descricaoProduto.setEnabled(true);
-        txt_quantidadeProduto.setEnabled(true);
-        txt_cnpjFornecedor.setEnabled(true);
-        txt_precoCompra.setEnabled(true);
-        txt_celular.setEnabled(true);
-        txt_telefoneFornecedor.setEnabled(true);
-        cb_fornecedor.setEnabled(true);
-        bt_salvar.setEnabled(true);
-        bt_cancelar.setEnabled(true);
-        bt_editar.setEnabled(false);
-        bt_excluir.setEnabled(false);
-        bt_pesquisar.setEnabled(false);
+	lbl_idFornecedor.setText("");
+	txt_nomeFornecedor.setText("");
+	txt_enderecoFornecedor.setText("");
+	txt_numeroFornecedor.setText("");
+	txt_cnpjFornecedor.setText("");
+	txt_celular.setText("");
+	txt_telefoneFornecedor.setText("");
+	txt_pesquisar.setText("");
+	txt_pesquisar.setEnabled(false);
+	txt_nomeFornecedor.setEnabled(true);
+	txt_enderecoFornecedor.setEnabled(true);
+	txt_numeroFornecedor.setEnabled(true);
+	txt_cnpjFornecedor.setEnabled(true);
+	txt_celular.setEnabled(true);
+	txt_telefoneFornecedor.setEnabled(true);
+	cb_bairroFornecedor.setEnabled(true);
+	bt_salvar.setEnabled(true);
+	bt_cancelar.setEnabled(true);
+	bt_editar.setEnabled(false);
+	bt_excluir.setEnabled(false);
+	bt_pesquisar.setEnabled(false);
     }//GEN-LAST:event_bt_novoActionPerformed
 
     private void bt_salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_salvarActionPerformed
-        if (txt_codigoProduto.getText().isEmpty() || txt_descricaoProduto.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "há campos a serem preenchidos");
-        } else {
-            mod.setNome_cliente(txt_codigoProduto.getText());
-            mod.setEndereco_cliente(txt_descricaoProduto.getText());
-            mod.setNumero_cliente(txt_quantidadeProduto.getText());
-            mod.setRg_cliente(txt_cnpjFornecedor.getText());
-            mod.setCpf_cliente(txt_precoCompra.getText());
-            mod.setCelular_cliente(txt_celular.getText());
-            mod.setTelefone_cliente(txt_telefoneFornecedor.getText());
-            mod.setNome_bairro(cb_fornecedor.getSelectedItem().toString());
-            control.AdicionarClientes(mod);
-            preencherTabela("select * from tbclientes inner join bairro on id_bairrof = id_bairro");
-        }
-        lbl_idProduto.setText("");
-        txt_codigoProduto.setText("");
-        txt_descricaoProduto.setText("");
-        txt_quantidadeProduto.setText("");
-        txt_cnpjFornecedor.setText("");
-        txt_precoCompra.setText("");
-        txt_celular.setText("");
-        txt_telefoneFornecedor.setText("");
-        txt_pesquisar.setText("");
-        txt_pesquisar.setEnabled(true);
-        txt_codigoProduto.setEnabled(false);
-        txt_descricaoProduto.setEnabled(false);
-        txt_quantidadeProduto.setEnabled(false);
-        txt_cnpjFornecedor.setEnabled(false);
-        txt_precoCompra.setEnabled(false);
-        txt_celular.setEnabled(false);
-        txt_telefoneFornecedor.setEnabled(false);
-        cb_fornecedor.setEnabled(false);
-        bt_novo.setEnabled(true);
-        bt_salvar.setEnabled(false);
-        bt_cancelar.setEnabled(true);
-        bt_editar.setEnabled(false);
-        bt_excluir.setEnabled(false);
-        bt_pesquisar.setEnabled(true);
+	if (txt_nomeFornecedor.getText().isEmpty() || txt_enderecoFornecedor.getText().isEmpty()) {
+	    JOptionPane.showMessageDialog(null, "há campos a serem preenchidos");
+	} else {
+	    mod.setNome_fornecedor(txt_nomeFornecedor.getText());
+	    mod.setEndereco_fornecedor(txt_enderecoFornecedor.getText());
+	    mod.setNumero_fornecedor(txt_numeroFornecedor.getText());
+	    mod.setCnpj_fornecedor(txt_cnpjFornecedor.getText());
+	    mod.setTelefone1_fornecedor(txt_celular.getText());
+	    mod.setTelefone2_fornecedor(txt_telefoneFornecedor.getText());
+	    mod.setNome_bairro(cb_bairroFornecedor.getSelectedItem().toString());
+	    control.AdicionarFornecedores(mod);
+	    preencherTabela("select * from tbfornecedores inner join bairro on id_bairrof = id_bairro");
+	}
+	lbl_idFornecedor.setText("");
+	txt_nomeFornecedor.setText("");
+	txt_enderecoFornecedor.setText("");
+	txt_numeroFornecedor.setText("");
+	txt_cnpjFornecedor.setText("");
+	txt_celular.setText("");
+	txt_telefoneFornecedor.setText("");
     }//GEN-LAST:event_bt_salvarActionPerformed
 
     private void bt_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_cancelarActionPerformed
-        lbl_idProduto.setText("");
-        txt_codigoProduto.setText("");
-        txt_descricaoProduto.setText("");
-        txt_quantidadeProduto.setText("");
-        txt_cnpjFornecedor.setText("");
-        txt_precoCompra.setText("");
-        txt_celular.setText("");
-        txt_telefoneFornecedor.setText("");
-        txt_pesquisar.setText("");
-        txt_pesquisar.setEnabled(true);
-        txt_codigoProduto.setEnabled(false);
-        txt_descricaoProduto.setEnabled(false);
-        txt_quantidadeProduto.setEnabled(false);
-        txt_cnpjFornecedor.setEnabled(false);
-        txt_precoCompra.setEnabled(false);
-        txt_celular.setEnabled(false);
-        txt_telefoneFornecedor.setEnabled(false);
-        cb_fornecedor.setEnabled(false);
-        bt_salvar.setEnabled(false);
-        bt_cancelar.setEnabled(true);
-        bt_editar.setEnabled(false);
-        bt_excluir.setEnabled(false);
-        bt_pesquisar.setEnabled(true);
+	lbl_idFornecedor.setText("");
+	txt_nomeFornecedor.setText("");
+	txt_enderecoFornecedor.setText("");
+	txt_numeroFornecedor.setText("");
+	txt_cnpjFornecedor.setText("");
+	txt_celular.setText("");
+	txt_telefoneFornecedor.setText("");
+	txt_pesquisar.setText("");
+	txt_pesquisar.setEnabled(true);
+	txt_nomeFornecedor.setEnabled(false);
+	txt_enderecoFornecedor.setEnabled(false);
+	txt_numeroFornecedor.setEnabled(false);
+	txt_cnpjFornecedor.setEnabled(false);
+	txt_celular.setEnabled(false);
+	txt_telefoneFornecedor.setEnabled(false);
+	cb_bairroFornecedor.setEnabled(false);
+	txt_cidade.setEnabled(false);
+	txt_estado.setEnabled(true);
+	bt_salvar.setEnabled(false);
+	bt_cancelar.setEnabled(true);
+	bt_editar.setEnabled(false);
+	bt_excluir.setEnabled(false);
+	bt_pesquisar.setEnabled(true);
     }//GEN-LAST:event_bt_cancelarActionPerformed
 
     private void bt_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_editarActionPerformed
-        mod.setId_cliente(Integer.parseInt(lbl_idProduto.getText()));
-        mod.setNome_cliente(txt_codigoProduto.getText());
-        mod.setEndereco_cliente(txt_descricaoProduto.getText());
-        mod.setNumero_cliente(txt_quantidadeProduto.getText());
-        mod.setRg_cliente(txt_cnpjFornecedor.getText());
-        mod.setCpf_cliente(txt_precoCompra.getText());
-        mod.setCelular_cliente(txt_celular.getText());
-        mod.setTelefone_cliente(txt_telefoneFornecedor.getText());
-        mod.setNome_bairro(cb_fornecedor.getSelectedItem().toString());
-        control.EditarClientes(mod);
-        preencherTabela("select * from tbclientes inner join bairro on id_bairrof = id_bairro");
+	mod.setId_fornecedor(Integer.parseInt(lbl_idFornecedor.getText()));
+	mod.setNome_fornecedor(txt_nomeFornecedor.getText());
+	mod.setEndereco_fornecedor(txt_enderecoFornecedor.getText());
+	mod.setNumero_fornecedor(txt_numeroFornecedor.getText());
+	mod.setCnpj_fornecedor(txt_cnpjFornecedor.getText());
+	mod.setTelefone1_fornecedor(txt_celular.getText());
+	mod.setTelefone2_fornecedor(txt_telefoneFornecedor.getText());
+	mod.setNome_bairro(cb_bairroFornecedor.getSelectedItem().toString());
+	control.EditarFornecedor(mod);
+	preencherTabela("select * from tbfornecedores inner join bairro on id_bairrof = id_bairro");
     }//GEN-LAST:event_bt_editarActionPerformed
 
     private void bt_excluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_excluirActionPerformed
-        mod.setId_cliente(Integer.parseInt(lbl_idProduto.getText()));
-        mod.setNome_cliente(txt_codigoProduto.getText());
-        mod.setEndereco_cliente(txt_descricaoProduto.getText());
-        mod.setNumero_cliente(txt_quantidadeProduto.getText());
-        mod.setRg_cliente(txt_cnpjFornecedor.getText());
-        mod.setCpf_cliente(txt_precoCompra.getText());
-        mod.setCelular_cliente(txt_celular.getText());
-        mod.setTelefone_cliente(txt_telefoneFornecedor.getText());
-        mod.setNome_bairro(cb_fornecedor.getSelectedItem().toString());
-        control.ExcluirClientes(mod);
-        lbl_idProduto.setText("");
-        txt_codigoProduto.setText("");
-        txt_descricaoProduto.setText("");
-        txt_quantidadeProduto.setText("");
-        txt_cnpjFornecedor.setText("");
-        txt_precoCompra.setText("");
-        txt_celular.setText("");
-        txt_telefoneFornecedor.setText("");
-        txt_pesquisar.setText("");
-        preencherTabela("select * from tbclientes inner join bairro on id_bairrof = id_bairro");
+	mod.setId_fornecedor(Integer.parseInt(lbl_idFornecedor.getText()));
+	mod.setNome_fornecedor(txt_nomeFornecedor.getText());
+	mod.setEndereco_fornecedor(txt_enderecoFornecedor.getText());
+	mod.setNumero_fornecedor(txt_numeroFornecedor.getText());
+	mod.setCnpj_fornecedor(txt_cnpjFornecedor.getText());
+	mod.setTelefone1_fornecedor(txt_celular.getText());
+	mod.setTelefone2_fornecedor(txt_telefoneFornecedor.getText());
+	mod.setNome_bairro(cb_bairroFornecedor.getSelectedItem().toString());
+	control.ExcluirFornecedores(mod);
+	lbl_idFornecedor.setText("");
+	txt_nomeFornecedor.setText("");
+	txt_enderecoFornecedor.setText("");
+	txt_numeroFornecedor.setText("");
+	txt_cnpjFornecedor.setText("");
+	txt_celular.setText("");
+	txt_telefoneFornecedor.setText("");
+	txt_pesquisar.setText("");
+	preencherTabela("select * from tbfornecedores inner join bairro on id_bairrof = id_bairro");
     }//GEN-LAST:event_bt_excluirActionPerformed
 
     private void tbl_fornecedoresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_fornecedoresMouseClicked
-        String nome_cliente = "" + tbl_fornecedores.getValueAt(tbl_fornecedores.getSelectedRow(), 1);
-        conex.Conexao();
-        conex.executaSql("select * from tbclientes inner join bairro on id_bairrof = id_bairro inner join cidade on id_cidadef = id_cidade inner join estado on id_estadof = id_estado  where nome_cliente='" + nome_cliente + "'");
-        try {
-            conex.rs.first();
-            lbl_idProduto.setText(Integer.toString(conex.rs.getInt("id_cliente")));
-            txt_codigoProduto.setText(conex.rs.getString("nome_cliente"));
-            txt_descricaoProduto.setText(conex.rs.getString("endereco_cliente"));
-            txt_quantidadeProduto.setText(conex.rs.getString("numero_cliente"));
-            txt_cnpjFornecedor.setText(conex.rs.getString("rg_cliente"));
-            txt_precoCompra.setText(conex.rs.getString("cpf_cliente"));
-            txt_celular.setText(conex.rs.getString("telefone1_cliente"));
-            txt_telefoneFornecedor.setText(conex.rs.getString("telefone2_cliente"));
-            cb_fornecedor.setSelectedItem(conex.rs.getString("nome_bairro"));
-            txt_cidade.setText(conex.rs.getString("nome_cidade"));
-            txt_estado.setText(conex.rs.getString("nome_estado"));
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Erro ao setar campos " + ex);
-        }
-        conex.desconecta();
-        bt_editar.setEnabled(true);
-        bt_excluir.setEnabled(true);
-        bt_salvar.setEnabled(false);
-        txt_codigoProduto.setEnabled(true);
-        cb_fornecedor.setEnabled(true);
-        txt_descricaoProduto.setEnabled(true);
-        txt_quantidadeProduto.setEnabled(true);
-        txt_cnpjFornecedor.setEnabled(true);
-        txt_precoCompra.setEnabled(true);
-        txt_celular.setEnabled(true);
-        txt_telefoneFornecedor.setEnabled(true);
-        cb_fornecedor.setEnabled(true);
-        bt_cancelar.setEnabled(true);
-        bt_pesquisar.setEnabled(false);
-        txt_pesquisar.setEnabled(false);
+	String nome_fornecedor = "" + tbl_fornecedores.getValueAt(tbl_fornecedores.getSelectedRow(), 1);
+	conex.Conexao();
+	conex.executaSql("select * from tbfornecedores inner join bairro on id_bairrof = id_bairro inner join cidade on id_cidadef = id_cidade inner join estado on id_estadof = id_estado  where nome_fornecedor='" + nome_fornecedor + "'");
+	try {
+	    conex.rs.first();
+	    lbl_idFornecedor.setText(Integer.toString(conex.rs.getInt("id_fornecedor")));
+	    txt_nomeFornecedor.setText(conex.rs.getString("nome_fornecedor"));
+	    txt_enderecoFornecedor.setText(conex.rs.getString("endereco_fornecedor"));
+	    txt_numeroFornecedor.setText(conex.rs.getString("numero_fornecedor"));
+	    txt_cnpjFornecedor.setText(conex.rs.getString("cnpj_fornecedor"));
+	    txt_celular.setText(conex.rs.getString("telefone1_fornecedor"));
+	    txt_telefoneFornecedor.setText(conex.rs.getString("telefone2_fornecedor"));
+	    cb_bairroFornecedor.setSelectedItem(conex.rs.getString("nome_bairro"));
+	    txt_cidade.setText(conex.rs.getString("nome_cidade"));
+	    txt_estado.setText(conex.rs.getString("nome_estado"));
+	} catch (Exception ex) {
+	    JOptionPane.showMessageDialog(null, "Erro ao setar campos " + ex);
+	}
+	conex.desconecta();
+	bt_editar.setEnabled(true);
+	bt_excluir.setEnabled(true);
+	bt_salvar.setEnabled(false);
+	txt_nomeFornecedor.setEnabled(true);
+	cb_bairroFornecedor.setEnabled(true);
+	txt_enderecoFornecedor.setEnabled(true);
+	txt_numeroFornecedor.setEnabled(true);
+	txt_cnpjFornecedor.setEnabled(true);
+	txt_celular.setEnabled(true);
+	txt_telefoneFornecedor.setEnabled(true);
+	cb_bairroFornecedor.setEnabled(true);
+	bt_cancelar.setEnabled(true);
+	bt_pesquisar.setEnabled(false);
+	txt_pesquisar.setEnabled(false);
     }//GEN-LAST:event_tbl_fornecedoresMouseClicked
 
     /**

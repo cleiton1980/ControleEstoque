@@ -37,8 +37,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
         menCadClientes = new javax.swing.JMenuItem();
         menCadUsuarios = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        menCompraProdutos = new javax.swing.JMenuItem();
+        menCompraFornecedores = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -73,7 +73,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jMenuBar1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         menCadastros.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        menCadastros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/AutoEletrica/icones/cad.png"))); // NOI18N
+        menCadastros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/ControleEstoque/icones/cadastro.png"))); // NOI18N
         menCadastros.setText("Cadastros");
         menCadastros.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         menCadastros.addActionListener(new java.awt.event.ActionListener() {
@@ -136,19 +136,29 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jMenuBar1.add(menCadastros);
 
         jMenu2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        jMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/AutoEletrica/icones/money.png"))); // NOI18N
+        jMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/ControleEstoque/icones/money.png"))); // NOI18N
         jMenu2.setText("Compras");
         jMenu2.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
 
-        jMenuItem1.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        jMenuItem1.setText("Cadastro de Produtos");
-        jMenuItem1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        jMenu2.add(jMenuItem1);
+        menCompraProdutos.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        menCompraProdutos.setText("Cadastro de Produtos");
+        menCompraProdutos.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        menCompraProdutos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menCompraProdutosActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menCompraProdutos);
 
-        jMenuItem2.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        jMenuItem2.setText("Cadastro de Fornecedores");
-        jMenuItem2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        jMenu2.add(jMenuItem2);
+        menCompraFornecedores.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        menCompraFornecedores.setText("Cadastro de Fornecedores");
+        menCompraFornecedores.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        menCompraFornecedores.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menCompraFornecedoresActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menCompraFornecedores);
 
         jMenuBar1.add(jMenu2);
 
@@ -205,6 +215,16 @@ public class TelaPrincipal extends javax.swing.JFrame {
 	clientes.setVisible(true);
     }//GEN-LAST:event_menCadastrosActionPerformed
 
+    private void menCompraProdutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCompraProdutosActionPerformed
+       FrmProdutos produtos = new FrmProdutos();
+       produtos.setVisible(true);
+    }//GEN-LAST:event_menCompraProdutosActionPerformed
+
+    private void menCompraFornecedoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCompraFornecedoresActionPerformed
+        FrmFornecedores fornecedores = new FrmFornecedores();
+	fornecedores.setVisible(true);
+    }//GEN-LAST:event_menCompraFornecedoresActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -243,8 +263,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu jMenu2;
     public javax.swing.JMenuBar jMenuBar1;
-    public javax.swing.JMenuItem jMenuItem1;
-    public javax.swing.JMenuItem jMenuItem2;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JMenuItem menBairros;
@@ -253,5 +271,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     public javax.swing.JMenuItem menCadEstados;
     public javax.swing.JMenuItem menCadUsuarios;
     public javax.swing.JMenu menCadastros;
+    public javax.swing.JMenuItem menCompraFornecedores;
+    public javax.swing.JMenuItem menCompraProdutos;
     // End of variables declaration//GEN-END:variables
 }

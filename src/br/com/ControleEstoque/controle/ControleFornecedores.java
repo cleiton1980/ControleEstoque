@@ -6,7 +6,6 @@
 package br.com.ControleEstoque.controle;
 
 import br.com.ControleEstoque.dal.ConexaoBD;
-import br.com.ControleEstoque.modelo.ModeloClientes;
 import br.com.ControleEstoque.modelo.ModeloFornecedores;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -43,11 +42,11 @@ public class ControleFornecedores {
 	    PreparedStatement pst = conex.conn.prepareStatement("insert into tbfornecedores (nome_fornecedor,endereco_fornecedor,numero_fornecedor,cnpj_fornecedor,telefone1_fornecedor,telefone2_fornecedor,id_bairrof)values(?,?,?,?,?,?,?)");
 	    pst.setString(1, mod.getNome_fornecedor());
 	    pst.setString(2, mod.getEndereco_fornecedor());
-	    pst.setString(4, mod.getNumero_fornecedor());
-	    pst.setString(5, mod.getCnpj_fornecedor());
-	    pst.setString(6, mod.getTelefone1_fornecedor());
-	    pst.setString(7, mod.getTelefone2_fornecedor());
-	    pst.setInt(8, id_bairro);
+	    pst.setString(3, mod.getNumero_fornecedor());
+	    pst.setString(4, mod.getCnpj_fornecedor());
+	    pst.setString(5, mod.getTelefone1_fornecedor());
+	    pst.setString(6, mod.getTelefone2_fornecedor());
+	    pst.setInt(7, id_bairro);
 	    pst.execute();
 	    JOptionPane.showMessageDialog(null, "Registro inserido com sucesso");
 	} catch (SQLException ex) {

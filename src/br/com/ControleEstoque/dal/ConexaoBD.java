@@ -20,8 +20,8 @@ public class ConexaoBD {
     public Statement stm;//Realiza a pesquisa no Banco de Dados
     public ResultSet rs; //Armazena o resultado da pesquisa no banco de dados
     private String driver = "com.mysql.jdbc.Driver";
-    private String caminho = "jdbc:mysql://192.168.1.38:3306/rm";
-  //private String caminho = "jdbc:mysql://localhost:3306/rm"; 
+    //private String caminho = "jdbc:mysql://192.168.1.38:3306/autoeletrica";
+  private String caminho = "jdbc:mysql://192.168.1.38:3306/autoeletrica"; 
     private String usuario = "cleiton";
     private String senha = "dnv8294moto";
     public Connection conn;

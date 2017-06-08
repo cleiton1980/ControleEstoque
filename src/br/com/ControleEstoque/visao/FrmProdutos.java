@@ -5,17 +5,92 @@
  */
 package br.com.ControleEstoque.visao;
 
+import br.com.ControleEstoque.Utilitarios.AtualizadorHora;
+import br.com.ControleEstoque.controle.ControleProdutos;
+import br.com.ControleEstoque.dal.ConexaoBD;
+import br.com.ControleEstoque.modelo.ModeloProdutos;
+import br.com.ControleEstoque.modelo.ModeloTabela;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+
 /**
  *
  * @author Cleiton
  */
 public class FrmProdutos extends javax.swing.JFrame {
-
+    ConexaoBD conex = new ConexaoBD();
+    ModeloProdutos mod = new ModeloProdutos();
+    ControleProdutos control = new ControleProdutos();
     /**
      * Creates new form FrmProdutos
      */
     public FrmProdutos() {
 	initComponents();
+	SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+	Date hoje = new Date();
+	lbl_data.setText(df.format(hoje));
+	AtualizadorHora.start(lbl_horario);
+	preencherFornecedores();
+	preencherTabela("select * from tbprodutos inner join tbfornecedores on id_fornecedorf = id_fornecedor order by nome_produto");
+    }//FIM DA INICIALIZAÇÃO
+    public void preencherFornecedores() {
+	conex.Conexao();
+
+	try {
+	    conex.executaSql("select * from tbfornecedores order by nome_fornecedor");
+	    conex.rs.first();
+	    cb_fornecedor.removeAllItems();
+	    do {
+		cb_fornecedor.addItem(conex.rs.getString("nome_fornecedor"));
+	    } while (conex.rs.next());
+	} catch (SQLException ex) {
+	    JOptionPane.showMessageDialog(null, "Erro ao preencher a cb_nomeFornecedor" + ex);
+	}
+	conex.desconecta();
+    }// FIM DO METODO
+
+    public void preencherTabela(String sql) {
+	ArrayList dados = new ArrayList();
+	String[] colunas = new String[]{"Id", "Produto","Código Barras", "Est.Atual", "Est.Minimo", "Est.Máximo", "Preço Compra", "Preço Venda","Localização"};
+	conex.Conexao();
+	conex.executaSql(sql);
+	try {
+	    conex.rs.first();
+	    do {
+		dados.add(new Object[]{conex.rs.getInt("id_produto"), conex.rs.getString("nome_produto"), conex.rs.getString("codigo_barras"), conex.rs.getString("quantidade_produto"), conex.rs.getString("estoqueMin_produto"), conex.rs.getString("estoqueMax_produto"), conex.rs.getFloat("precoCompra_produto"), conex.rs.getFloat("precoVenda_produto"),conex.rs.getString("local_produto")});
+	    } while (conex.rs.next());
+
+	} catch (Exception ex) {
+	    JOptionPane.showMessageDialog(null, "Erro ao preencher ArrayList" + ex);
+	}
+	ModeloTabela modelo = new ModeloTabela(dados, colunas);
+	tbl_produtos.setModel(modelo);
+	tbl_produtos.getColumnModel().getColumn(0).setPreferredWidth(50);
+	tbl_produtos.getColumnModel().getColumn(0).setResizable(false);
+	tbl_produtos.getColumnModel().getColumn(1).setPreferredWidth(225);
+	tbl_produtos.getColumnModel().getColumn(1).setResizable(false);
+	tbl_produtos.getColumnModel().getColumn(2).setPreferredWidth(180);
+	tbl_produtos.getColumnModel().getColumn(2).setResizable(false);
+	tbl_produtos.getColumnModel().getColumn(3).setPreferredWidth(100);
+	tbl_produtos.getColumnModel().getColumn(3).setResizable(false);
+	tbl_produtos.getColumnModel().getColumn(4).setPreferredWidth(100);
+	tbl_produtos.getColumnModel().getColumn(4).setResizable(false);
+	tbl_produtos.getColumnModel().getColumn(5).setPreferredWidth(100);
+	tbl_produtos.getColumnModel().getColumn(5).setResizable(false);
+	tbl_produtos.getColumnModel().getColumn(6).setPreferredWidth(100);
+	tbl_produtos.getColumnModel().getColumn(6).setResizable(false);
+	tbl_produtos.getColumnModel().getColumn(7).setPreferredWidth(100);
+	tbl_produtos.getColumnModel().getColumn(7).setResizable(false);
+	tbl_produtos.getColumnModel().getColumn(8).setPreferredWidth(100);
+	tbl_produtos.getColumnModel().getColumn(8).setResizable(false);
+	tbl_produtos.getTableHeader().setReorderingAllowed(false);
+	tbl_produtos.setAutoResizeMode(tbl_produtos.AUTO_RESIZE_OFF);
+	tbl_produtos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	conex.desconecta();
     }
 
     /**
@@ -52,11 +127,11 @@ public class FrmProdutos extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
-        txt_celular = new javax.swing.JFormattedTextField();
-        txt_telefoneCliente = new javax.swing.JFormattedTextField();
-        txt_rgCliente = new javax.swing.JFormattedTextField();
-        txt_precoCompra = new javax.swing.JFormattedTextField();
-        txt_precoVenda = new javax.swing.JFormattedTextField();
+        txt_precoCompra = new javax.swing.JTextField();
+        txt_precoVenda = new javax.swing.JTextField();
+        txt_local = new javax.swing.JTextField();
+        txt_estoqueMin = new javax.swing.JTextField();
+        txt_estoqueMax = new javax.swing.JTextField();
         jPanel7 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         bt_novo = new javax.swing.JButton();
@@ -70,7 +145,7 @@ public class FrmProdutos extends javax.swing.JFrame {
         bt_excluir = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
-        tbl_clientes = new javax.swing.JTable();
+        tbl_produtos = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -248,7 +323,7 @@ public class FrmProdutos extends javax.swing.JFrame {
 
         jLabel10.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel10.setText("Pesquise por um Produto :");
+        jLabel10.setText("Pesquise um Produto :");
         jLabel10.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         jLabel4.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
@@ -266,80 +341,25 @@ public class FrmProdutos extends javax.swing.JFrame {
         jLabel12.setText("Estoque Máximo :");
         jLabel12.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        txt_celular.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        try {
-            txt_celular.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-        txt_celular.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txt_celular.setToolTipText("");
-        txt_celular.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        txt_celular.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_celularActionPerformed(evt);
-            }
-        });
-
-        txt_telefoneCliente.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        try {
-            txt_telefoneCliente.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-        txt_telefoneCliente.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txt_telefoneCliente.setToolTipText("");
-        txt_telefoneCliente.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        txt_telefoneCliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_telefoneClienteActionPerformed(evt);
-            }
-        });
-
-        txt_rgCliente.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        try {
-            txt_rgCliente.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-        txt_rgCliente.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txt_rgCliente.setToolTipText("");
-        txt_rgCliente.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        txt_rgCliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_rgClienteActionPerformed(evt);
-            }
-        });
-
-        txt_precoCompra.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        try {
-            txt_precoCompra.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("R$")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-        txt_precoCompra.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txt_precoCompra.setToolTipText("");
         txt_precoCompra.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        txt_precoCompra.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_precoCompraActionPerformed(evt);
-            }
-        });
+        txt_precoCompra.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txt_precoCompra.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        txt_precoVenda.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        try {
-            txt_precoVenda.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("R$")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-        txt_precoVenda.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txt_precoVenda.setToolTipText("");
         txt_precoVenda.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        txt_precoVenda.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_precoVendaActionPerformed(evt);
-            }
-        });
+        txt_precoVenda.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txt_precoVenda.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        txt_local.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        txt_local.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txt_local.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        txt_estoqueMin.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        txt_estoqueMin.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txt_estoqueMin.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        txt_estoqueMax.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        txt_estoqueMax.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txt_estoqueMax.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -352,13 +372,18 @@ public class FrmProdutos extends javax.swing.JFrame {
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txt_precoVenda, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txt_precoCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cb_fornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txt_quantidadeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txt_descricaoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txt_codigoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(txt_quantidadeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(345, 345, 345))
+                    .addComponent(txt_descricaoProduto)
+                    .addComponent(txt_codigoProduto)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txt_precoVenda)
+                            .addComponent(txt_precoCompra)
+                            .addComponent(cb_fornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(150, 150, 150)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -368,13 +393,13 @@ public class FrmProdutos extends javax.swing.JFrame {
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGap(1, 1, 1)
                                 .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txt_celular)
-                            .addComponent(txt_telefoneCliente)
-                            .addComponent(txt_rgCliente)
-                            .addComponent(txt_pesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(116, 116, 116))
+                            .addComponent(txt_local)
+                            .addComponent(txt_estoqueMin)
+                            .addComponent(txt_estoqueMax)
+                            .addComponent(txt_pesquisar, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
+                        .addContainerGap(227, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addComponent(bt_pesquisar)
                         .addGap(324, 324, 324))))
@@ -391,24 +416,23 @@ public class FrmProdutos extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txt_celular, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel2)
-                        .addComponent(txt_codigoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel4)))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txt_codigoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(txt_local, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(txt_descricaoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11)
-                    .addComponent(txt_telefoneCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txt_estoqueMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(txt_quantidadeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12)
-                    .addComponent(txt_rgCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txt_estoqueMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -418,12 +442,12 @@ public class FrmProdutos extends javax.swing.JFrame {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel8)
-                            .addComponent(txt_precoCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txt_precoCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel9)
-                            .addComponent(txt_precoVenda, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(24, Short.MAX_VALUE))
+                            .addComponent(txt_precoVenda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(27, Short.MAX_VALUE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel10)
@@ -433,12 +457,14 @@ public class FrmProdutos extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
 
+        jPanel5Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {txt_codigoProduto, txt_descricaoProduto, txt_estoqueMax, txt_estoqueMin, txt_local, txt_pesquisar, txt_quantidadeProduto});
+
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         bt_novo.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        bt_novo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/AutoEletrica/icones/add.png"))); // NOI18N
+        bt_novo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/ControleEstoque/icones/add.png"))); // NOI18N
         bt_novo.setText("Novo");
         bt_novo.setToolTipText("Faça um novo Registro");
         bt_novo.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -469,11 +495,12 @@ public class FrmProdutos extends javax.swing.JFrame {
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         bt_salvar.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        bt_salvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/AutoEletrica/icones/save-icon.png"))); // NOI18N
+        bt_salvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/ControleEstoque/icones/save-icon.png"))); // NOI18N
         bt_salvar.setText("Salvar");
         bt_salvar.setToolTipText("Salve um novo registro");
         bt_salvar.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         bt_salvar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        bt_salvar.setEnabled(false);
         bt_salvar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bt_salvarActionPerformed(evt);
@@ -500,11 +527,12 @@ public class FrmProdutos extends javax.swing.JFrame {
         jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         bt_cancelar.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        bt_cancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/AutoEletrica/icones/cancel-icon.png"))); // NOI18N
+        bt_cancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/ControleEstoque/icones/cancel-icon.png"))); // NOI18N
         bt_cancelar.setText("Cancelar");
         bt_cancelar.setToolTipText("Limpar os Campos");
         bt_cancelar.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         bt_cancelar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        bt_cancelar.setEnabled(false);
         bt_cancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bt_cancelarActionPerformed(evt);
@@ -531,11 +559,12 @@ public class FrmProdutos extends javax.swing.JFrame {
         jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         bt_editar.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        bt_editar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/AutoEletrica/icones/File-edit-icon.png"))); // NOI18N
+        bt_editar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/ControleEstoque/icones/File-edit-icon.png"))); // NOI18N
         bt_editar.setText("Editar");
         bt_editar.setToolTipText("Atualizar um registro");
         bt_editar.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         bt_editar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        bt_editar.setEnabled(false);
         bt_editar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bt_editarActionPerformed(evt);
@@ -562,11 +591,12 @@ public class FrmProdutos extends javax.swing.JFrame {
         jPanel12.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         bt_excluir.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        bt_excluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/AutoEletrica/icones/delete.png"))); // NOI18N
+        bt_excluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/ControleEstoque/icones/delete.png"))); // NOI18N
         bt_excluir.setText("Excluir");
         bt_excluir.setToolTipText("Ecluir permanentemente um registro");
         bt_excluir.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         bt_excluir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        bt_excluir.setEnabled(false);
         bt_excluir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bt_excluirActionPerformed(evt);
@@ -623,7 +653,7 @@ public class FrmProdutos extends javax.swing.JFrame {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Produtos  Cadastrados", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 14))); // NOI18N
 
-        tbl_clientes.setModel(new javax.swing.table.DefaultTableModel(
+        tbl_produtos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -634,12 +664,12 @@ public class FrmProdutos extends javax.swing.JFrame {
 
             }
         ));
-        tbl_clientes.addMouseListener(new java.awt.event.MouseAdapter() {
+        tbl_produtos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tbl_clientesMouseClicked(evt);
+                tbl_produtosMouseClicked(evt);
             }
         });
-        jScrollPane6.setViewportView(tbl_clientes);
+        jScrollPane6.setViewportView(tbl_produtos);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -681,10 +711,10 @@ public class FrmProdutos extends javax.swing.JFrame {
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(1137, Short.MAX_VALUE))
+                .addContainerGap(134, Short.MAX_VALUE))
         );
 
-        setSize(new java.awt.Dimension(1366, 1799));
+        setSize(new java.awt.Dimension(1366, 799));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -693,63 +723,46 @@ public class FrmProdutos extends javax.swing.JFrame {
     }//GEN-LAST:event_cb_fornecedorMouseEntered
 
     private void bt_pesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_pesquisarActionPerformed
-        String pesquisa = txt_pesquisar.getText();
-        if (pesquisa.equals("")) {
-            JOptionPane.showMessageDialog(null, "Digite um Cliente a ser pesquisado");
-        } else {
-
-            mod.setPesquisa(txt_pesquisar.getText());
-            ModeloClientes model = control.pesquisarClientes(mod);
-            lbl_idProduto.setText(String.valueOf(model.getId_cliente()));
-            txt_codigoProduto.setText(model.getNome_cliente());
-            txt_descricaoProduto.setText(model.getEndereco_cliente());
-            txt_quantidadeProduto.setText(model.getNumero_cliente());
-            txt_rgCliente.setText(model.getRg_cliente());
-            txt_precoCompra.setText(model.getCpf_cliente());
-            txt_celular.setText(model.getCelular_cliente());
-            txt_telefoneCliente.setText(model.getTelefone_cliente());
-            cb_fornecedor.setSelectedItem(model.getNome_bairro());
-            txt_cidade.setText(model.getNome_cidade());
-            txt_estado.setText(model.getNome_estado());
-            bt_editar.setEnabled(true);
-            bt_excluir.setEnabled(true);
-        }
+  	String pesquisa = txt_pesquisar.getText();
+	if (pesquisa.equals("")) {
+	    JOptionPane.showMessageDialog(null, "Digite um Produto a ser pesquisado"); 
+	} else {
+	mod.setPesquisa(txt_pesquisar.getText());
+	ModeloProdutos model = control.pesquisarProdutos(mod);
+	lbl_idProduto.setText(String.valueOf(model.getId_produto()));
+	txt_descricaoProduto.setText(model.getNome_produto());
+	txt_codigoProduto.setText(model.getCodigo_barras());
+	txt_quantidadeProduto.setText(Integer.toString(model.getQuantidade_produto()));
+	txt_precoCompra.setText(Float.toString(model.getPrecoCompra_produto()));
+	txt_precoVenda.setText(Float.toString(model.getPrecoVenda_produto()));
+	txt_estoqueMin.setText(Integer.toString(model.getEstoqueMin_produto()));
+	txt_estoqueMax.setText(Integer.toString(model.getEstoqueMax_produto()));
+	txt_local.setText(model.getLocal_produto());
+	cb_fornecedor.setSelectedItem(model.getNome_fornecedor());
+	bt_editar.setEnabled(true);
+	bt_excluir.setEnabled(true); 
+      }
     }//GEN-LAST:event_bt_pesquisarActionPerformed
-
-    private void txt_celularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_celularActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_celularActionPerformed
-
-    private void txt_telefoneClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_telefoneClienteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_telefoneClienteActionPerformed
-
-    private void txt_rgClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_rgClienteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_rgClienteActionPerformed
-
-    private void txt_precoCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_precoCompraActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_precoCompraActionPerformed
 
     private void bt_novoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_novoActionPerformed
         lbl_idProduto.setText("");
         txt_codigoProduto.setText("");
         txt_descricaoProduto.setText("");
         txt_quantidadeProduto.setText("");
-        txt_rgCliente.setText("");
+        txt_estoqueMax.setText("");
         txt_precoCompra.setText("");
-        txt_celular.setText("");
-        txt_telefoneCliente.setText("");
+	txt_precoVenda.setText("");
+        txt_local.setText("");
+        txt_estoqueMin.setText("");
         txt_pesquisar.setText("");
         txt_pesquisar.setEnabled(false);
         txt_codigoProduto.setEnabled(true);
         txt_descricaoProduto.setEnabled(true);
         txt_quantidadeProduto.setEnabled(true);
-        txt_rgCliente.setEnabled(true);
+        txt_estoqueMax.setEnabled(true);
         txt_precoCompra.setEnabled(true);
-        txt_celular.setEnabled(true);
-        txt_telefoneCliente.setEnabled(true);
+        txt_local.setEnabled(true);
+        txt_estoqueMin.setEnabled(true);
         cb_fornecedor.setEnabled(true);
         bt_salvar.setEnabled(true);
         bt_cancelar.setEnabled(true);
@@ -759,44 +772,30 @@ public class FrmProdutos extends javax.swing.JFrame {
     }//GEN-LAST:event_bt_novoActionPerformed
 
     private void bt_salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_salvarActionPerformed
-        if (txt_codigoProduto.getText().isEmpty() || txt_descricaoProduto.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "há campos a serem preenchidos");
-        } else {
-            mod.setNome_cliente(txt_codigoProduto.getText());
-            mod.setEndereco_cliente(txt_descricaoProduto.getText());
-            mod.setNumero_cliente(txt_quantidadeProduto.getText());
-            mod.setRg_cliente(txt_rgCliente.getText());
-            mod.setCpf_cliente(txt_precoCompra.getText());
-            mod.setCelular_cliente(txt_celular.getText());
-            mod.setTelefone_cliente(txt_telefoneCliente.getText());
-            mod.setNome_bairro(cb_fornecedor.getSelectedItem().toString());
-            control.AdicionarClientes(mod);
-            preencherTabela("select * from tbclientes inner join bairro on id_bairrof = id_bairro");
-        }
-        lbl_idProduto.setText("");
-        txt_codigoProduto.setText("");
-        txt_descricaoProduto.setText("");
-        txt_quantidadeProduto.setText("");
-        txt_rgCliente.setText("");
-        txt_precoCompra.setText("");
-        txt_celular.setText("");
-        txt_telefoneCliente.setText("");
-        txt_pesquisar.setText("");
-        txt_pesquisar.setEnabled(true);
-        txt_codigoProduto.setEnabled(false);
-        txt_descricaoProduto.setEnabled(false);
-        txt_quantidadeProduto.setEnabled(false);
-        txt_rgCliente.setEnabled(false);
-        txt_precoCompra.setEnabled(false);
-        txt_celular.setEnabled(false);
-        txt_telefoneCliente.setEnabled(false);
-        cb_fornecedor.setEnabled(false);
-        bt_novo.setEnabled(true);
-        bt_salvar.setEnabled(false);
-        bt_cancelar.setEnabled(true);
-        bt_editar.setEnabled(false);
-        bt_excluir.setEnabled(false);
-        bt_pesquisar.setEnabled(true);
+     if (txt_descricaoProduto.getText().isEmpty() || txt_quantidadeProduto.getText().isEmpty()) {
+	    JOptionPane.showMessageDialog(null, "há campos a serem preenchidos");
+	} else {
+	    mod.setNome_produto(txt_descricaoProduto.getText());
+	    mod.setQuantidade_produto(Integer.parseInt(txt_quantidadeProduto.getText()));
+	    mod.setCodigo_barras(txt_codigoProduto.getText());
+	    mod.setPrecoCompra_produto(Float.parseFloat(txt_precoCompra.getText().replace(",", ".")));
+	    mod.setPrecoVenda_produto(Float.parseFloat(txt_precoVenda.getText().replace(",", ".")));
+	    mod.setEstoqueMin_produto(Integer.parseInt(txt_estoqueMin.getText()));
+	    mod.setEstoqueMax_produto(Integer.parseInt(txt_estoqueMax.getText()));
+	    mod.setLocal_produto(txt_local.getText());
+	    mod.setNome_fornecedor(cb_fornecedor.getSelectedItem().toString());
+	    control.AdicionarProdutos(mod);
+	    preencherTabela("select * from tbprodutos inner join tbfornecedores on id_fornecedorf = id_fornecedor order by nome_produto");
+	}
+	lbl_idProduto.setText("");
+	txt_descricaoProduto.setText("");
+	txt_quantidadeProduto.setText("");
+	txt_codigoProduto.setText("");
+	txt_precoCompra.setText("");
+	txt_precoVenda.setText("");
+	txt_estoqueMin.setText("");
+	txt_estoqueMax.setText("");
+	txt_local.setText("");
     }//GEN-LAST:event_bt_salvarActionPerformed
 
     private void bt_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_cancelarActionPerformed
@@ -804,19 +803,21 @@ public class FrmProdutos extends javax.swing.JFrame {
         txt_codigoProduto.setText("");
         txt_descricaoProduto.setText("");
         txt_quantidadeProduto.setText("");
-        txt_rgCliente.setText("");
+        txt_estoqueMax.setText("");
         txt_precoCompra.setText("");
-        txt_celular.setText("");
-        txt_telefoneCliente.setText("");
+	txt_precoVenda.setText("");
+        txt_local.setText("");
+        txt_estoqueMin.setText("");
         txt_pesquisar.setText("");
         txt_pesquisar.setEnabled(true);
         txt_codigoProduto.setEnabled(false);
         txt_descricaoProduto.setEnabled(false);
         txt_quantidadeProduto.setEnabled(false);
-        txt_rgCliente.setEnabled(false);
+        txt_estoqueMax.setEnabled(false);
         txt_precoCompra.setEnabled(false);
-        txt_celular.setEnabled(false);
-        txt_telefoneCliente.setEnabled(false);
+	txt_precoVenda.setEnabled(false);
+        txt_local.setEnabled(false);
+        txt_estoqueMin.setEnabled(false);
         cb_fornecedor.setEnabled(false);
         bt_salvar.setEnabled(false);
         bt_cancelar.setEnabled(true);
@@ -826,83 +827,92 @@ public class FrmProdutos extends javax.swing.JFrame {
     }//GEN-LAST:event_bt_cancelarActionPerformed
 
     private void bt_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_editarActionPerformed
-        mod.setId_cliente(Integer.parseInt(lbl_idProduto.getText()));
-        mod.setNome_cliente(txt_codigoProduto.getText());
-        mod.setEndereco_cliente(txt_descricaoProduto.getText());
-        mod.setNumero_cliente(txt_quantidadeProduto.getText());
-        mod.setRg_cliente(txt_rgCliente.getText());
-        mod.setCpf_cliente(txt_precoCompra.getText());
-        mod.setCelular_cliente(txt_celular.getText());
-        mod.setTelefone_cliente(txt_telefoneCliente.getText());
-        mod.setNome_bairro(cb_fornecedor.getSelectedItem().toString());
-        control.EditarClientes(mod);
-        preencherTabela("select * from tbclientes inner join bairro on id_bairrof = id_bairro");
+   	mod.setId_produto(Integer.parseInt(lbl_idProduto.getText()));
+	mod.setNome_produto(txt_descricaoProduto.getText());
+	mod.setCodigo_barras(txt_codigoProduto.getText());
+	mod.setQuantidade_produto(Integer.parseInt(txt_quantidadeProduto.getText()));
+	mod.setPrecoCompra_produto(Float.parseFloat(txt_precoCompra.getText().replace(",", ".")));
+	mod.setPrecoVenda_produto(Float.parseFloat(txt_precoVenda.getText().replace(",", ".")));
+	mod.setEstoqueMin_produto(Integer.parseInt(txt_estoqueMin.getText()));
+	mod.setEstoqueMax_produto(Integer.parseInt(txt_estoqueMax.getText()));
+	mod.setLocal_produto(txt_local.getText());
+	mod.setNome_fornecedor(cb_fornecedor.getSelectedItem().toString());
+	control.EditarProdutos(mod);	
+	preencherTabela("select * from tbprodutos inner join tbfornecedores on id_fornecedorf = id_fornecedor order by nome_produto");
+	lbl_idProduto.setText("");
+	txt_descricaoProduto.setText("");
+	txt_codigoProduto.setText("");
+	txt_quantidadeProduto.setText("");
+	txt_precoCompra.setText("");
+	txt_precoVenda.setText("");
+	txt_estoqueMin.setText("");
+	txt_estoqueMax.setText("");
+	txt_local.setText("");
+	txt_pesquisar.setText("");
     }//GEN-LAST:event_bt_editarActionPerformed
 
     private void bt_excluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_excluirActionPerformed
-        mod.setId_cliente(Integer.parseInt(lbl_idProduto.getText()));
-        mod.setNome_cliente(txt_codigoProduto.getText());
-        mod.setEndereco_cliente(txt_descricaoProduto.getText());
-        mod.setNumero_cliente(txt_quantidadeProduto.getText());
-        mod.setRg_cliente(txt_rgCliente.getText());
-        mod.setCpf_cliente(txt_precoCompra.getText());
-        mod.setCelular_cliente(txt_celular.getText());
-        mod.setTelefone_cliente(txt_telefoneCliente.getText());
-        mod.setNome_bairro(cb_fornecedor.getSelectedItem().toString());
-        control.ExcluirClientes(mod);
+     	mod.setId_produto(Integer.parseInt(lbl_idProduto.getText()));
+	mod.setNome_produto(txt_descricaoProduto.getText());
+	mod.setCodigo_barras(txt_codigoProduto.getText());
+	mod.setQuantidade_produto(Integer.parseInt(txt_quantidadeProduto.getText()));
+	mod.setPrecoCompra_produto(Float.parseFloat(txt_precoCompra.getText().replace(",", ".")));
+	mod.setPrecoVenda_produto(Float.parseFloat(txt_precoVenda.getText().replace(",", ".")));
+	mod.setEstoqueMin_produto(Integer.parseInt(txt_estoqueMin.getText()));
+	mod.setEstoqueMax_produto(Integer.parseInt(txt_estoqueMax.getText()));
+	mod.setLocal_produto(txt_local.getText());
+	mod.setNome_fornecedor(cb_fornecedor.getSelectedItem().toString());
+        control.ExcluirProdutos(mod);
         lbl_idProduto.setText("");
-        txt_codigoProduto.setText("");
-        txt_descricaoProduto.setText("");
-        txt_quantidadeProduto.setText("");
-        txt_rgCliente.setText("");
-        txt_precoCompra.setText("");
-        txt_celular.setText("");
-        txt_telefoneCliente.setText("");
-        txt_pesquisar.setText("");
-        preencherTabela("select * from tbclientes inner join bairro on id_bairrof = id_bairro");
+	txt_descricaoProduto.setText("");
+	txt_codigoProduto.setText("");
+	txt_quantidadeProduto.setText("");
+	txt_precoCompra.setText("");
+	txt_precoVenda.setText("");
+	txt_estoqueMin.setText("");
+	txt_estoqueMax.setText("");
+	txt_local.setText("");
+	txt_pesquisar.setText("");
+        preencherTabela("select * from tbprodutos inner join tbfornecedores on id_fornecedorf = id_fornecedor order by nome_produto");
     }//GEN-LAST:event_bt_excluirActionPerformed
 
-    private void tbl_clientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_clientesMouseClicked
-        String nome_cliente = "" + tbl_clientes.getValueAt(tbl_clientes.getSelectedRow(), 1);
-        conex.Conexao();
-        conex.executaSql("select * from tbclientes inner join bairro on id_bairrof = id_bairro inner join cidade on id_cidadef = id_cidade inner join estado on id_estadof = id_estado  where nome_cliente='" + nome_cliente + "'");
-        try {
-            conex.rs.first();
-            lbl_idProduto.setText(Integer.toString(conex.rs.getInt("id_cliente")));
-            txt_codigoProduto.setText(conex.rs.getString("nome_cliente"));
-            txt_descricaoProduto.setText(conex.rs.getString("endereco_cliente"));
-            txt_quantidadeProduto.setText(conex.rs.getString("numero_cliente"));
-            txt_rgCliente.setText(conex.rs.getString("rg_cliente"));
-            txt_precoCompra.setText(conex.rs.getString("cpf_cliente"));
-            txt_celular.setText(conex.rs.getString("telefone1_cliente"));
-            txt_telefoneCliente.setText(conex.rs.getString("telefone2_cliente"));
-            cb_fornecedor.setSelectedItem(conex.rs.getString("nome_bairro"));
-            txt_cidade.setText(conex.rs.getString("nome_cidade"));
-            txt_estado.setText(conex.rs.getString("nome_estado"));
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Erro ao setar campos " + ex);
-        }
-        conex.desconecta();
-        bt_editar.setEnabled(true);
-        bt_excluir.setEnabled(true);
-        bt_salvar.setEnabled(false);
-        txt_codigoProduto.setEnabled(true);
-        cb_fornecedor.setEnabled(true);
-        txt_descricaoProduto.setEnabled(true);
-        txt_quantidadeProduto.setEnabled(true);
-        txt_rgCliente.setEnabled(true);
-        txt_precoCompra.setEnabled(true);
-        txt_celular.setEnabled(true);
-        txt_telefoneCliente.setEnabled(true);
-        cb_fornecedor.setEnabled(true);
-        bt_cancelar.setEnabled(true);
-        bt_pesquisar.setEnabled(false);
-        txt_pesquisar.setEnabled(false);
-    }//GEN-LAST:event_tbl_clientesMouseClicked
+    private void tbl_produtosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_produtosMouseClicked
+  String nome_produto = "" + tbl_produtos.getValueAt(tbl_produtos.getSelectedRow(), 1);
+	conex.Conexao();
+	conex.executaSql("select * from tbprodutos inner join tbfornecedores on id_fornecedorf = id_fornecedor  where nome_produto='" + nome_produto + "'");
+	try {
+	    conex.rs.first();
+	    lbl_idProduto.setText(Integer.toString(conex.rs.getInt("id_produto")));
+	    txt_descricaoProduto.setText(conex.rs.getString("nome_produto"));
+	    txt_quantidadeProduto.setText(Integer.toString(conex.rs.getInt("quantidade_produto")));
+	    txt_codigoProduto.setText(conex.rs.getString("codigo_barras"));
+	    txt_precoCompra.setText(Float.toString(conex.rs.getFloat("precoCompra_produto")));
+	    txt_precoVenda.setText(Float.toString(conex.rs.getFloat("precoVenda_produto")));
+	    txt_estoqueMin.setText(Integer.toString(conex.rs.getInt("estoqueMin_produto")));
+	    txt_estoqueMax.setText(Integer.toString(conex.rs.getInt("estoqueMax_produto")));
+	    txt_local.setText(conex.rs.getString("local_produto"));
+	    cb_fornecedor.setSelectedItem(conex.rs.getString("nome_fornecedor"));
+	} catch (Exception ex) {
+	    JOptionPane.showMessageDialog(null, "Erro ao setar campos " + ex);
+	}
+	conex.desconecta();
+	txt_descricaoProduto.setEnabled(true);
+	txt_quantidadeProduto.setEnabled(true);
+	txt_codigoProduto.setEnabled(true);
+	txt_precoCompra.setEnabled(true);
+	txt_precoVenda.setEnabled(true);
+	txt_estoqueMin.setEnabled(true);
+	txt_estoqueMax.setEnabled(true);
+	txt_local.setEnabled(true);
+	cb_fornecedor.setEnabled(true);
+	bt_pesquisar.setEnabled(false);
+	txt_pesquisar.setEnabled(false);
 
-    private void txt_precoVendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_precoVendaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_precoVendaActionPerformed
+	bt_editar.setEnabled(true);
+	bt_excluir.setEnabled(true);
+	bt_cancelar.setEnabled(true);
+	bt_salvar.setEnabled(false);
+    }//GEN-LAST:event_tbl_produtosMouseClicked
 
     /**
      * @param args the command line arguments
@@ -974,15 +984,15 @@ public class FrmProdutos extends javax.swing.JFrame {
     public javax.swing.JLabel lbl_data;
     public javax.swing.JLabel lbl_horario;
     public javax.swing.JLabel lbl_idProduto;
-    public javax.swing.JTable tbl_clientes;
-    public javax.swing.JFormattedTextField txt_celular;
+    public javax.swing.JTable tbl_produtos;
     public javax.swing.JTextField txt_codigoProduto;
     public javax.swing.JTextField txt_descricaoProduto;
+    public javax.swing.JTextField txt_estoqueMax;
+    public javax.swing.JTextField txt_estoqueMin;
+    public javax.swing.JTextField txt_local;
     public javax.swing.JTextField txt_pesquisar;
-    public javax.swing.JFormattedTextField txt_precoCompra;
-    public javax.swing.JFormattedTextField txt_precoVenda;
+    public javax.swing.JTextField txt_precoCompra;
+    public javax.swing.JTextField txt_precoVenda;
     public javax.swing.JTextField txt_quantidadeProduto;
-    public javax.swing.JFormattedTextField txt_rgCliente;
-    public javax.swing.JFormattedTextField txt_telefoneCliente;
     // End of variables declaration//GEN-END:variables
 }

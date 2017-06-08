@@ -534,7 +534,7 @@ public class FrmClientes extends javax.swing.JFrame {
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         bt_novo.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        bt_novo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/AutoEletrica/icones/add.png"))); // NOI18N
+        bt_novo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/ControleEstoque/icones/add.png"))); // NOI18N
         bt_novo.setText("Novo");
         bt_novo.setToolTipText("Faça um novo Registro");
         bt_novo.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -565,7 +565,7 @@ public class FrmClientes extends javax.swing.JFrame {
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         bt_salvar.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        bt_salvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/AutoEletrica/icones/save-icon.png"))); // NOI18N
+        bt_salvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/ControleEstoque/icones/save-icon.png"))); // NOI18N
         bt_salvar.setText("Salvar");
         bt_salvar.setToolTipText("Salve um novo registro");
         bt_salvar.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -596,7 +596,7 @@ public class FrmClientes extends javax.swing.JFrame {
         jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         bt_cancelar.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        bt_cancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/AutoEletrica/icones/cancel-icon.png"))); // NOI18N
+        bt_cancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/ControleEstoque/icones/cancel-icon.png"))); // NOI18N
         bt_cancelar.setText("Cancelar");
         bt_cancelar.setToolTipText("Limpar os Campos");
         bt_cancelar.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -627,7 +627,7 @@ public class FrmClientes extends javax.swing.JFrame {
         jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         bt_editar.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        bt_editar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/AutoEletrica/icones/File-edit-icon.png"))); // NOI18N
+        bt_editar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/ControleEstoque/icones/File-edit-icon.png"))); // NOI18N
         bt_editar.setText("Editar");
         bt_editar.setToolTipText("Atualizar um registro");
         bt_editar.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -658,7 +658,7 @@ public class FrmClientes extends javax.swing.JFrame {
         jPanel12.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         bt_excluir.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        bt_excluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/AutoEletrica/icones/delete.png"))); // NOI18N
+        bt_excluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/ControleEstoque/icones/delete.png"))); // NOI18N
         bt_excluir.setText("Excluir");
         bt_excluir.setToolTipText("Ecluir permanentemente um registro");
         bt_excluir.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
